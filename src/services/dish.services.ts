@@ -3,19 +3,19 @@ import { AppError } from "../errors";
 import { Dish, IDish } from "../models/dish.model";
 import Ingredient, { IIngredient } from "../models/ingredient.model";
 import { IRestaurant, Restaurant } from "../models/restaurant.model";
-import { getIngredientByDishService } from "./ingredient.services";
+import { getIngredientByDishService, getIngredientInfoByID } from "./ingredient.services";
 
-const getDishInfo = (dish: any) => {
+const getDishInfo = async (dish: any) => {
     return {
         id: dish._id,
         name: dish.name,
-        ingredients: dish.ingredients // You might want to return ingredient info here
+        ingredients: await Promise.all(dish.ingredients.map(async (ingredient: any) => await getIngredientInfoByID(ingredient)))
     };
 };
 
 export const getDishService = async () => {
     const dishes: (IDish & {_id: ObjectId})[] = await Dish.find();
-    return dishes.map(dish => getDishInfo(dish));
+    return await Promise.all(dishes.map(async dish => await getDishInfo(dish)));
 };
 
 export const createDishService = async (name: string, ingredients: IIngredient[]) => {
@@ -47,7 +47,7 @@ export const getDishesByRestaurantService = async (restaurantId: string) => {
 
         const ingredientList = await getIngredientByDishService(value._id.toString());
 
-        return getDishInfo({
+        return await getDishInfo({
             ...dish,
             ingredients: ingredientList
         });

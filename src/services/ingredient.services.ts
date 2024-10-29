@@ -4,13 +4,14 @@ import { Dish, IDish } from "../models/dish.model"
 import Ingredient, { IIngredient } from "../models/ingredient.model"
 
 const getIngredientInfo = (ingredient: IIngredient & {_id: ObjectId}) => {
-    return {
+    const value = {
         id: ingredient._id,
         name: ingredient.name,
         isMeat: ingredient.isMeat,
         isAnimal: ingredient.isAnimal,
         hasGluten: ingredient.hasGluten
     }
+    return value
 }
 
 export const getIngredientService = async (query = "") => {
@@ -52,6 +53,7 @@ export const getIngredientInfoByID = async (ingredientId: string) => {
 
     if (!ingredient)
         throw new AppError("Ingredient not found!", 404)
+
 
     return getIngredientInfo(ingredient)
 }
