@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm build && node ./build/index.js",
+    "start": "npm run build && node ./build/index.js",
     "dev": "nodemon src/index.ts",
     "build": "npm install && tsc -b"
   },
