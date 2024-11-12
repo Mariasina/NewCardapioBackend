@@ -3,7 +3,7 @@ import { Dish, IDish } from "../models/dish.model";
 import { AppError } from "../errors";
 import { IRestaurant, Restaurant } from "../models/restaurant.model";
 import { Menu } from "../models/menu.model";
-import { getDishesByRestaurantService } from "./dish.services";
+import { createDishService, DishFullObject, getDishesByRestaurantService } from "./dish.services";
 
 const getRestaurantInfo = (restaurant:any) => {
     return {
@@ -30,16 +30,19 @@ export const getRestaurantByIdService = async (id: string) => {
     };
 };
 
-export const createRestaurantService = async(name: string, description: string, dishes: string[]) => {
-    const dishesId = await Promise.all(dishes.map(async x => {
-        const dish = await Dish.findById(x)
-        if(!dish){
-            throw new AppError("Invalid dish", 404)
-        }
-        return dish._id
+export const createRestaurantService = async(name: string, description: string, dishes: DishFullObject[]) => {
+    let newDishes = dishes.filter(value => value.id === "")
+
+    const registeredDishes = await Promise.all(newDishes.map(async (dish) => {
+        const value = await createDishService(dish.name, dish.ingredients)
+        dish.id = value._id.toString();
+
+        return value
     }))
 
-    await Restaurant.create({name, description, dishes: dishesId})
+    const fullDishList = [...dishes.filter(value => value.id !== ""), ...registeredDishes]
+
+    await Restaurant.create({name, description, dishes: fullDishList})
     
 }
 
