@@ -5,6 +5,12 @@ import Ingredient, { IIngredient } from "../models/ingredient.model";
 import { IRestaurant, Restaurant } from "../models/restaurant.model";
 import { getIngredientByDishService, getIngredientInfoByID } from "./ingredient.services";
 
+export type DishFullObject = {
+    id: string,
+    name: string,
+    ingredients: IIngredient[]
+}
+
 const getDishInfo = async (dish: any) => {
     return {
         id: dish._id,
