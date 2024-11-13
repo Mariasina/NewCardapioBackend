@@ -37,6 +37,8 @@ export const getIngredientByDishService = async (dishId: string) => {
         throw new AppError("Dish not found!", 404)
 
     const ingredients = await Promise.all(dish.ingredients.map(async value => {
+        console.log("Valor id:" + value._id)
+        console.log("Valor id:" + value._id._bsontype)
         const ingredient: (IIngredient & {_id: ObjectId}) | null = await Ingredient.findById(value._id)
 
         if (!ingredient)
