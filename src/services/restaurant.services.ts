@@ -3,7 +3,7 @@ import { Dish, IDish } from "../models/dish.model";
 import { AppError } from "../errors";
 import { IRestaurant, Restaurant } from "../models/restaurant.model";
 import { Menu } from "../models/menu.model";
-import { createDishService, DishFullObject, getDishesByRestaurantService } from "./dish.services";
+import { createDishService, DishFullObject, getDishesByRestaurantService, getDishService } from "./dish.services";
 
 const getRestaurantInfo = (restaurant:any) => {
     return {
@@ -21,6 +21,7 @@ export const getRestaurantService = async () => {
 
 export const getRestaurantByIdService = async (id: string) => {
     const restaurant: IRestaurant & {_id: ObjectId } | null = await Restaurant.findById(id);
+    
     if (!restaurant) {
         throw new AppError("Restaurant not found!", 404);
     }
@@ -33,16 +34,22 @@ export const getRestaurantByIdService = async (id: string) => {
 export const createRestaurantService = async(name: string, description: string, dishes: DishFullObject[]) => {
     let newDishes = dishes.filter(value => value.id === "")
 
-    const registeredDishes = await Promise.all(newDishes.map(async (dish) => {
+    const newDishesRegistered = await Promise.all(newDishes.map(async (dish) => {
         const value = await createDishService(dish.name, dish.ingredients)
-        dish.id = value._id.toString();
-
         return value
     }))
 
-    const fullDishList = [...dishes.filter(value => value.id !== ""), ...registeredDishes]
+    const registered = dishes.filter(value => value.id !== "");
 
-    await Restaurant.create({name, description, dishes: fullDishList})
+    const dishList = await Promise.all(registered.map(async value => {
+        const dishObject = Dish.findById(value.id)
+
+        return dishObject
+    }))
+
+    const fullDishList = [...dishList, ...newDishesRegistered]
+
+    return await Restaurant.create({name, description, dishes: fullDishList})
     
 }
 

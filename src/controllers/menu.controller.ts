@@ -29,6 +29,7 @@ export const getMenuByDateController = async (req: Request, res: Response<any>) 
 export const createMenuController = async(req: Request<{}, {}, createMenuRequest>, res: Response<IMessageResponse>) => {
     const { date, restaurants} = req.body
 
+
     const newMenu = await createMenuService(new Date(date), restaurants)
     
     res.json({

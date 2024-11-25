@@ -25,6 +25,12 @@ export const getDishService = async () => {
 };
 
 export const createDishService = async (name: string, ingredients: IIngredient[]) => {
+    const exists = await Dish.findOne({name})
+
+    if (exists) {
+        return exists
+    }
+
     const ingredientList = await Promise.all(
         ingredients.map(async (x) => {
             const entity = await Ingredient.findOne({ name: x.name });
@@ -41,23 +47,20 @@ export const createDishService = async (name: string, ingredients: IIngredient[]
 
 export const getDishesByRestaurantService = async (restaurantId: string) => {
     const restaurant = await Restaurant.findById(restaurantId);
-    console.log(restaurantId, restaurant)
+
     if (!restaurant) {
         throw new AppError("Restaurant not found!", 404);
     }
 
     const dishes = await Promise.all(restaurant.dishes.map(async (value) => {
-        const dish: (IDish & {_id: ObjectId}) | null = await Dish.findById(value._id);
+        const dish: (IDish & {_id: ObjectId}) | null = await Dish.findById(value.toString());
 
         if (!dish) return undefined;
 
-        const ingredientList = await getIngredientByDishService(value._id.toString());
-
-        return await getDishInfo({
-            ...dish,
-            ingredients: ingredientList
-        });
+        const ingredientList = await getIngredientByDishService(value.toString());
+        
+        return { id: dish._id, name: dish.name, ingredients: ingredientList}
     }));
-
+    
     return dishes.filter(value => value !== undefined);
 };

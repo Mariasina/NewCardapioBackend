@@ -1,4 +1,4 @@
-import 'express-async-errors'
+// import 'express-async-errors'
 import express, { NextFunction, Request, Response } from 'express'
 import cors from 'cors'
 
@@ -31,19 +31,19 @@ app.use(dishRoutes)
 app.use(restaurantRoutes)
 app.use(menuRoutes)
 
-app.use(async (err: Error, req: Request, res: Response, next: NextFunction) => {
-    let status = 500
-    const response = {
-        message: err.message
-    }
+// app.use(async (err: Error, req: Request, res: Response, next: NextFunction) => {
+//     let status = 500
+//     const response = {
+//         message: err.message
+//     }
 
-    if (err instanceof AppError) {
-        status = err.status
-    }
+//     if (err instanceof AppError) {
+//         status = err.status
+//     }
 
-    res.status(status).json(response)
+//     res.status(status).json(response)
 
-    next()
-})
+//     next()
+// })
 
 export { app }

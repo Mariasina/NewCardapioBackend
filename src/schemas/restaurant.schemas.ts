@@ -3,9 +3,9 @@ import { IDish } from "../models/dish.model";
 import { DishFullObject } from "../services/dish.services";
 
 const DishFullObjectSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-    ingredients: z.array(z.object({
+        id: z.string(),
+        name: z.string(),
+        ingredients: z.array(z.object({
         id: z.string(),
         name: z.string(),
         isMeat: z.boolean(),

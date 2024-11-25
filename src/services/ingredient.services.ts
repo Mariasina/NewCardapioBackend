@@ -5,7 +5,7 @@ import Ingredient, { IIngredient } from "../models/ingredient.model"
 
 const getIngredientInfo = (ingredient: IIngredient & {_id: ObjectId}) => {
     const value = {
-        id: ingredient._id,
+        id: ingredient._id.toString(),
         name: ingredient.name,
         isMeat: ingredient.isMeat,
         isAnimal: ingredient.isAnimal,
@@ -37,16 +37,15 @@ export const getIngredientByDishService = async (dishId: string) => {
         throw new AppError("Dish not found!", 404)
 
     const ingredients = await Promise.all(dish.ingredients.map(async value => {
-        console.log("Valor id:" + value._id)
-        console.log("Valor id:" + value._id._bsontype)
-        const ingredient: (IIngredient & {_id: ObjectId}) | null = await Ingredient.findById(value._id)
 
+        const ingredient: (IIngredient & {_id: ObjectId}) | null = await Ingredient.findById(value._id)
+        
         if (!ingredient)
             return undefined
-
+        
         return getIngredientInfo(ingredient)
     }))
-
+    
     return ingredients.filter(value => value !== undefined)
 }
 

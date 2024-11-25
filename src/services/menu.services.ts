@@ -1,7 +1,7 @@
 import { AppError } from "../errors";
 import { Menu, IMenu } from "../models/menu.model";
-import { Restaurant } from "../models/restaurant.model";
-import { getRestaurantByIdService } from "./restaurant.services"; // Adjust import as needed
+import { IRestaurant, Restaurant } from "../models/restaurant.model";
+import { createRestaurantService, getRestaurantByIdService } from "./restaurant.services"; // Adjust import as needed
 
 // Helper function to format menu info
 const getMenuInfo = (menu: any) => {
@@ -17,14 +17,12 @@ export const getMenusService = async () => {
     return menus.map(menu => getMenuInfo(menu));
 };
 
-export const createMenuService = async (date: Date, restaurants: string[]) => {
-    const restaurantIds = await Promise.all(restaurants.map(async (restaurantId) => {
-        const restaurant = await Restaurant.findById(restaurantId);
-        if (!restaurant) {
-            throw new AppError("Invalid restaurant", 404);
-        }
-        return restaurant._id;
-    }));
+export const createMenuService = async (date: Date, restaurants: any[]) => {
+    const restaurantIds = await Promise.all(restaurants.map(async (value) => {
+        const r: any = await createRestaurantService(value.name, value.description, value.dishes)
+
+        return r._id
+    }))
 
     const newMenu = await Menu.create({ date, restaurants: restaurantIds });
     return getMenuInfo(newMenu);

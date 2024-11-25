@@ -7,7 +7,7 @@ export interface IDish {
 }
 
 const dishSchema = new Schema<IDish>({
-    name: {type: String, required: true, unique: true},
+    name: {type: String, required: true, unique: false},
     ingredients: [{ type: Schema.Types.ObjectId, ref: 'Ingredients', required: true }]
 })
 

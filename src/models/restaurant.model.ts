@@ -7,7 +7,7 @@ export type IRestaurant = {
 }
 
 const restaurantSchema = new Schema<IRestaurant>({
-    name: {type: String, required: true, unique: true},
+    name: {type: String, required: true, unique: false},
     dishes: [{ type: Schema.Types.ObjectId, ref: 'Dishes', required: true }]
 })
 
