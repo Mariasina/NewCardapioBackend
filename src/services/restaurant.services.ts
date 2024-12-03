@@ -27,6 +27,7 @@ export const getRestaurantByIdService = async (id: string) => {
     }
     return {
         ...getRestaurantInfo(restaurant),
+        description: restaurant.description,
         dishes: await getDishesByRestaurantService(id)
     };
 };

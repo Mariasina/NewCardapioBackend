@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const createMenuSchema = z.object({
-    date: z.string({required_error: "Invalid date!"}).date(),
+    date: z.string({required_error: "Invalid date!"}),
     restaurants: z.array(z.any())
 })
 
