@@ -21,7 +21,6 @@ export const createAdmin = async (req: Request<{}, {}, createAdminRequest>, res:
 
 
 export const userLogin = async (req: Request<{}, {}, userLoginRequest>, res: Response<ILoginResponse>) => {
-    console.log(req.body)
     const token = await loginUserService(req.body.username, req.body.password)
 
     res.json({ message: "Login success!", token })

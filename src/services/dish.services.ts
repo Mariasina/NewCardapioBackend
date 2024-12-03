@@ -34,13 +34,11 @@ export const createDishService = async (name: string, ingredients: IIngredient[]
     const ingredientList = await Promise.all(
         ingredients.map(async (x) => {
             const entity = await Ingredient.findOne({ name: x.name });
-            console.log(x, ":", entity)
 
             if (!entity)
                 
                 return await Ingredient.create(x)
 
-            console.log("Returning entitty")
             return entity
         })
     );

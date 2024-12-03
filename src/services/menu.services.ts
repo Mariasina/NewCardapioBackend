@@ -30,11 +30,13 @@ export const createMenuService = async (date: Date, restaurants: any[]) => {
 
 export const getMenuByDateService = async (date: Date) => {
     const startOfDay = new Date(date.setHours(0, 0, 0, 0));
-    const endOfDay = new Date(date.setHours(23, 59, 59, 999));
+    const endOfDay = new Date(date.setHours(24, 0, 0, 0));
 
     const menu = await Menu.findOne({ 
         date: { $gte: startOfDay, $lte: endOfDay } 
     });
+
+    console.log(menu)
 
     if (!menu) {
         throw new AppError("Menu not found for the specified date!", 404);
