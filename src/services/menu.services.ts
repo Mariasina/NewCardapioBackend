@@ -12,9 +12,13 @@ const getMenuInfo = (menu: any) => {
     };
 };
 
-export const getMenusService = async () => {
-    const menus: IMenu[] = await Menu.find();
-    return menus.map(menu => getMenuInfo(menu));
+export const getMenusService = async (page: number, limit: number) => {
+    const skip = (page - 1) * limit
+
+    const pages = Math.ceil(await Menu.countDocuments() / limit)
+
+    const menus: IMenu[] = await Menu.find({}, {}, {skip, limit});
+    return { pages, menus: menus.map(menu => getMenuInfo(menu))};
 };
 
 export const createMenuService = async (date: Date, restaurants: any[]) => {

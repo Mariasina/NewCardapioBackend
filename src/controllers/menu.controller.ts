@@ -3,13 +3,20 @@ import { createMenuRequest } from "../schemas/menu.schemas"
 import { IMessageResponse } from "../dtos"
 import { createMenuService, getMenuByDateService, getMenusService } from "../services/menu.services"
 import { MenuListResponse } from "../dtos/menu.dto"
+import { AppError } from "../errors"
 
 export const getMenusController = async (req: Request, res: Response<MenuListResponse>) => {
-    const menus = await getMenusService()
+    const {page, limit} = req.query
+
+    if (isNaN(parseInt(page as string)) || isNaN(parseInt(limit as string))) {
+        throw new AppError("Invalid Params", 400)
+    }
+
+    const menus = await getMenusService(Number(page), Number(limit))
 
     res.json({
         message: "Succesfully fetched the menu list!",
-        menus
+        ...menus
     })
 }
 
